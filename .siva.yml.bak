@@ -1,0 +1,33 @@
+name: siva
+prefix: ""
+
+topology:
+  defaults:
+    kind: nokia_srlinux
+  kinds:
+    nokia_srlinux:
+      image: ghcr.io/nokia/srlinux:23.10.2
+    nokia_sros:
+      image: vrnetlab/nokia-sros:23.10.R3
+      license: ./license.txt
+    linux:
+      image: quay.io/frrouting/frr:9.0.2
+#########################################################
+  nodes:
+    dcgw1:
+      kind: nokia_sros
+      type: sr-1
+      startup-config: ./startup_configs/dcgw1.partial.cfg
+    spine1:
+      type: ixrd3l
+      startup-config: ./startup_configs/spine1.cfg
+    leaf1:
+      type: ixrd2l
+      startup-config: ./startup_configs/leaf1.cfg
+#########################################################
+  links:
+  # DCGW - Spine
+    - endpoints: ["dcgw1:eth1", "spine1:e1-21"]
+
+  # Spine1 - Leaf
+    - endpoints: ["spine1:e1-1", "leaf1:e1-49"]
